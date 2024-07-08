@@ -1,13 +1,48 @@
-import { Movie } from "./useProps.ts";
+import { Movie } from "../../type.ts";
+import YouTube from "react-youtube";
+
+// export type Props = {
+//   title: string;
+//   fetchUrl: string;
+//   isLargeRow?: boolean;
+// };
 
 type LayoutProps = {
   title: string;
-  movies: Movie[];
   isLargeRow?: boolean;
+  movies: Movie[];
+  // 追加
+  trailerUrl: string | null;
+  handleClick: (movie: Movie) => void;
 };
 
-export const Layout = ({ title, movies, isLargeRow }: LayoutProps) => {
+// 追加
+type Options = {
+  height: string;
+  width: string;
+  playerVars: {
+    autoplay: 0 | 1 | undefined;
+  };
+};
+
+export const Layout = ({
+  title,
+  movies,
+  isLargeRow,
+  // 追加
+  handleClick,
+  trailerUrl,
+}: LayoutProps) => {
   const image_url = "https://image.tmdb.org/t/p/original";
+  // 追加
+  const opts: Options = {
+    height: "390",
+    width: "640",
+    playerVars: {
+      autoplay: 1,
+    },
+  };
+
   return (
     <div className="ml-5 text-white">
       <h2>{title}</h2>
@@ -23,10 +58,14 @@ export const Layout = ({ title, movies, isLargeRow }: LayoutProps) => {
             src={`${image_url}${
               isLargeRow ? movie.poster_path : movie.backdrop_path
             }`}
+            // 追加
+            onClick={() => handleClick(movie)}
             alt={movie.name}
           />
         ))}
       </div>
+      {/* 追加 */}
+      {trailerUrl && <YouTube videoId={trailerUrl} opts={opts} />}
     </div>
   );
 };
